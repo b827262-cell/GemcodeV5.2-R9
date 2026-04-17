@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ultra IDE V5.2 Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="sidebar">
+        <header id="brand-header">
+            <div class="logo">GEMCODE</div>
+            <div class="version">V5.2</div>
+        </header>
+        <div id="file-list-container"></div>
+    </div>
+    
+    <div id="main-content">
+        <div id="editor-container">
+            <div id="editor"></div>
+            <div id="toolbar">
+                <span id="current-file-label" style="margin-right: 15px; color: #00e5ff; font-size: 12px;">未選擇檔案</span>
+                <button onclick="save()">Save</button>
+            </div>
+        </div>
+        <div id="diff-panel">
+            <div class="panel-header">DIFF 預覽 (與儲存版本比對)</div>
+            <pre id="diff"></pre>
+        </div>
+    </div>
+
+    <div id="task-panel">
+        <div class="panel-header">AI AGENT CONTROL</div>
+        <div id="model-selector">
+            <select id="model-name">
+                <option value="models/gemini-3.1-pro-preview">Gemini 3.1 Pro (2026 旗艦)</option>
+                <option value="models/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash-Lite (極速)</option>
+                <option value="models/gemini-2.5-pro">Gemini 2.5 Pro (穩定高階)</option>
+                <option value="models/gemini-2.5-flash">Gemini 2.5 Flash (平衡型)</option>
+                <option value="models/gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (經濟型)</option>
+                <option value="models/gemma-4-31b-it">Gemma 4 (31B) - 開源王者</option>
+            </select>
+        </div>
+        <textarea id="prompt-input" placeholder="🚀 輸入開發目標..."></textarea>
+        <button id="run-btn" onclick="submitTask()">執行任務</button>
+        <div id="log-container">
+            <div style="color: #888; font-size: 11px; margin-bottom: 5px;">SYSTEM LOGS</div>
+            <div id="logs"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

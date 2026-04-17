@@ -1,0 +1,27 @@
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ultra-v5-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./workspace:/app/workspace
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: ultra-v5-frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    restart: always
+
+networks:
+  default:
+    name: ultra-net

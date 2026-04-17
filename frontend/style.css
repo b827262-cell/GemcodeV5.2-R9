@@ -1,0 +1,32 @@
+body { margin:0; display:flex; height:100vh; background:#0d1117; color:#c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+
+/* 品牌標誌樣式 */
+#brand-header { margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #30363d; }
+.logo { font-size: 26px; font-weight: 900; color: #ff8c00; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 140, 0, 0.3); }
+.version { font-size: 10px; color: #6e7681; font-weight: bold; margin-top: -5px; }
+
+#sidebar { width:200px; border-right:1px solid #333; padding:20px; background: #010409; display: flex; flex-direction: column; }
+.file-item { padding: 8px; cursor: pointer; border-radius: 4px; margin-bottom: 5px; font-size: 13px; color: #8b949e; }
+.file-item:hover { background: #161b22; color: #58a6ff; }
+
+#main-content { flex:1; display:flex; flex-direction:column; border-right: 1px solid #333; }
+#editor-container { flex: 2; display:flex; flex-direction:column; }
+#editor { flex:1; }
+#toolbar { padding:10px 20px; background:#161b22; border-top:1px solid #333; display: flex; align-items: center; justify-content: space-between; }
+
+#diff-panel { flex: 1; background:#010409; border-top:2px solid #30363d; display:flex; flex-direction:column; }
+#diff { flex:1; margin:0; padding:15px; overflow:auto; color:#79c0ff; font-size:12px; font-family: 'Fira Code', monospace; line-height: 1.5; }
+
+#task-panel { width: 320px; display: flex; flex-direction: column; background: #0d1117; padding: 20px; }
+.panel-header { font-size: 11px; font-weight: bold; color: #6e7681; margin-bottom: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+#model-name { width: 100%; padding: 10px; background: #161b22; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; margin-bottom: 15px; font-size: 12px; }
+#prompt-input { height: 120px; background: #010409; color: #fff; border: 1px solid #30363d; border-radius: 6px; padding: 12px; resize: none; margin-bottom: 15px; outline: none; font-size: 13px; }
+#run-btn { background: #238636; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
+#run-btn:hover { background: #2ea043; }
+
+#log-container { flex: 1; margin-top: 20px; background: #010409; border: 1px solid #30363d; border-radius: 6px; padding: 12px; overflow-y: auto; font-size: 12px; }
+.log-entry { margin-bottom: 8px; color: #00e5ff; font-family: 'Fira Code', monospace; }
+
+button { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+button:hover { background: #30363d; }
