@@ -4,3 +4,4 @@ python-dotenv
 google-genai
 gitpython
 pydantic
+google-cloud-firestore

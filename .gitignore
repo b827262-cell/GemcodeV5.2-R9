@@ -1,5 +1,17 @@
-.venv/
-__pycache__/
+# 敏感金鑰與環境變數 (絕對不能上傳！)
 .env
-workspace/
+gcp-key.json
+application_default_credentials.json
+
+# Python 快取與虛擬環境
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Docker 與系統檔案
 .DS_Store
+node_modules/
+dist/
+.gcloud/
+workspace/

@@ -1,6 +1,10 @@
 FROM nginx:alpine
-RUN rm -rf /usr/share/nginx/html/*
-COPY frontend/ /usr/share/nginx/html/
-# 確保 nginx 使用者有權限讀取這些檔案
-RUN chmod -R 755 /usr/share/nginx/html
+
+# 將當前目錄(frontend)的所有檔案複製到 Nginx 的對外展示區
+COPY . /usr/share/nginx/html
+
+# 開放 80 Port 讓 Cloud Run 連接
 EXPOSE 80
+
+# 啟動 Nginx
+CMD ["nginx", "-g", "daemon off;"]

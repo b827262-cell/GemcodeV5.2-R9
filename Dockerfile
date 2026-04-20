@@ -2,13 +2,13 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# 複製依賴清單並安裝
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 複製程式碼與環境變數檔
-COPY test_genai.py .
-COPY .env .
+COPY backend/ ./backend/
 
-# 預設執行測試腳本
-CMD ["python", "test_genai.py"]
+# 🌟 關鍵修復：切換到 backend 目錄內，讓 Python 能順利找到 api, core 等資料夾
+WORKDIR /app/backend
+
+# 啟動指令改為直接呼叫 main:app
+CMD exec uvicorn main:app --host 0.0.0.0 --port $PORT

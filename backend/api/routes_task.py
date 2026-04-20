@@ -17,4 +17,5 @@ async def create_task(req: TaskRequest, bg: BackgroundTasks):
 
 @router.get("/task/{task_id}")
 async def get_task(task_id: str):
-    return task_manager.tasks.get(task_id, {"error": "Not found"})
+    # 🌟 關鍵修復：這裡改用 get_task() 方法去向 Firestore 拿資料
+    return task_manager.get_task(task_id)

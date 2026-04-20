@@ -1,6 +1,8 @@
 require.config({ paths:{vs:'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'} })
 let editor, currentFile = ""
 
+const API_BASE = "https://ultra-backend-569094769218.asia-east1.run.app";
+
 require(['vs/editor/editor.main'],()=>{
  editor=monaco.editor.create(document.getElementById('editor'),{
   value:'# 歡迎來到 GEMCODE IDE\n# 選擇一個檔案或輸入任務開始...',
@@ -11,7 +13,8 @@ require(['vs/editor/editor.main'],()=>{
 
 async function loadFiles(){
  try {
-  let res=await fetch("http://localhost:8000/files")
+  // 🌟 修正：確保加上 /files 獲取清單
+  let res=await fetch(`${API_BASE}/files`)
   let files=await res.json()
   let sb=document.getElementById("file-list-container")
   sb.innerHTML='<div style="color:#484f58; font-size:11px; margin-bottom:10px; letter-spacing:1px;">WORKSPACE</div>'
@@ -28,7 +31,7 @@ async function loadFiles(){
 async function openFile(name){
  currentFile=name
  document.getElementById("current-file-label").innerText = `EDITING: ${name}`
- let res=await fetch("http://localhost:8000/file/"+name)
+ let res=await fetch(`${API_BASE}/file/`+name)
  let data=await res.json()
  editor.setValue(data.content)
 }
@@ -37,7 +40,7 @@ async function save(){
  let content=editor.getValue()
  let targetName = currentFile || prompt("請輸入新檔案名稱:", "main.py")
  if (!targetName) return
- await fetch("http://localhost:8000/file",{
+ await fetch(`${API_BASE}/file`,{
   method:"POST", headers:{'Content-Type':'application/json'},
   body:JSON.stringify({name:targetName, content:content})
  })
@@ -55,7 +58,8 @@ async function submitTask() {
     document.getElementById('logs').innerHTML = '<div class="log-entry">🚀 任務已提交...</div>';
     
     try {
-        const res = await fetch("http://localhost:8000/task", {
+        // 🌟 修正：任務提交必須去 /task
+        const res = await fetch(`${API_BASE}/task`, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ prompt: promptValue, model: model })
@@ -67,7 +71,8 @@ async function submitTask() {
 
 function startPolling(taskId) {
     const timer = setInterval(async () => {
-        const res = await fetch(`http://localhost:8000/task/${taskId}`);
+        // 🌟 修正：輪詢狀態必須去 /task/${taskId}
+        const res = await fetch(`${API_BASE}/task/${taskId}`);
         const data = await res.json();
         
         const logHtml = data.logs.map(log => `<div class="log-entry">${log}</div>`).join('');

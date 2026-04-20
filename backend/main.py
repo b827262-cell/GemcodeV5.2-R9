@@ -7,7 +7,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+	"http://localhost:3001",
+        "https://ultra-frontend-569094769218.asia-east1.run.app"
+	],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
