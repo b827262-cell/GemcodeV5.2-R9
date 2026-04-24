@@ -1,54 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-    <meta charset="utf-8">
-    <title>Ultra IDE V5.2 Agent</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>GETCODE IDE V7.0 - Ultimate Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <style>
+        .tabs { display: flex; background: #0d1117; padding-top: 5px; border-bottom: 1px solid var(--border); }
+        .tab { padding: 5px 15px; background: #161b22; color: #8b949e; border: 1px solid var(--border); border-bottom: none; border-radius: 4px 4px 0 0; margin-right: 2px; cursor: pointer; font-size: 12px; font-family: monospace; }
+        .tab.active { background: #010409; color: #c9d1d9; border-top: 2px solid var(--primary); font-weight: bold; }
+    </style>
 </head>
 <body>
-    <div id="sidebar">
-        <header id="brand-header">
-            <div class="logo">GEMCODE</div>
-            <div class="version">V5.2</div>
-        </header>
-        <div id="file-list-container"></div>
-    </div>
-    
-    <div id="main-content">
-        <div id="editor-container">
-            <div id="editor"></div>
-            <div id="toolbar">
-                <span id="current-file-label" style="margin-right: 15px; color: #00e5ff; font-size: 12px;">未選擇檔案</span>
-                <button onclick="save()">Save</button>
+    <div class="app-container">
+        <div class="row" id="top-row" style="height: 40%;">
+            <div class="panel" id="control-panel" style="width: 40%;">
+                <div class="getcode-title">GETCODE</div>
+                
+                <select id="model-select">
+                    <optgroup label="Gemini 系列 (核心與多模態)">
+                        <option value="models/gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
+                        <option value="models/gemini-3.1-pro-preview-customtools">Gemini 3.1 Pro (Custom Tools)</option>
+                        <option value="models/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash-Lite Preview</option>
+                        <option value="models/gemini-3-pro-preview">Gemini 3 Pro Preview</option>
+                        <option value="models/gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+                        <option value="models/gemini-flash-latest">Gemini Flash Latest</option>
+                        <option value="models/gemini-pro-latest">Gemini Pro Latest</option>
+                        <option value="models/gemini-2.5-pro">Gemini 2.5 Pro</option>
+                        <option value="models/gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+                        <option value="models/gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
+                        <option value="models/gemini-2.0-flash">Gemini 2.0 Flash</option>
+                        <option value="models/gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite</option>
+                    </optgroup>
+                    <optgroup label="Gemma 系列 (開源權重模型)">
+                        <option value="models/gemma-4-31b-it">Gemma 4 31B IT</option>
+                    </optgroup>
+                </select>
+
+                <textarea id="task-input" class="task-input" placeholder="例如：同時開發資料生成與分析功能..."></textarea>
+                <button id="ai-btn" class="primary-btn">生成專案代碼 (多檔案)</button>
+            </div>
+            
+            <div class="splitter-v" id="split-v-top"></div>
+            
+            <div class="panel" id="logs-panel" style="width: 60%; gap: 10px; display: flex; flex-direction: column;">
+                <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                    <div class="panel-label">SYSTEM LOGS</div>
+                    <div id="logs" class="log-area">> 系統已就緒 (XML 解析與 Session 隔離啟動)...</div>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                    <div class="panel-label">📂 WORKSPACE EXPLORER</div>
+                    <div id="file-list" class="file-list-area">等待程式執行產生檔案...</div>
+                </div>
             </div>
         </div>
-        <div id="diff-panel">
-            <div class="panel-header">DIFF 預覽 (與儲存版本比對)</div>
-            <pre id="diff"></pre>
+
+        <div class="splitter-h" id="split-h-main"></div>
+
+        <div class="bottom-row" id="bottom-row" style="height: 60%;">
+            <div class="panel" id="editor-panel" style="width: 50%; padding-top: 0;">
+                <div class="tabs" id="tab-bar">
+                    </div>
+                <div class="toolbar" style="margin-top: 8px;">
+                    <button id="btn-open" class="tool-btn">📂 開啟本機</button>
+                    <button id="btn-save" class="tool-btn">💾 儲存本機</button>
+                </div>
+                <textarea id="editor-content"></textarea>
+            </div>
+
+            <div class="splitter-v" id="split-v-bottom"></div>
+
+            <div class="panel" id="terminal-panel" style="width: 50%;">
+                <div class="toolbar" style="justify-content: space-between;">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button class="run-btn" id="run-btn">▶ RUN 當前分頁</button>
+                    </div>
+                    <button id="dl-btn" class="tool-btn" style="display: none; background: #3fb950; color: white;">📥 下載圖表</button>
+                </div>
+                <div class="terminal-output" id="terminal-output">等待執行結果...</div>
+            </div>
         </div>
     </div>
-
-    <div id="task-panel">
-        <div class="panel-header">AI AGENT CONTROL</div>
-        <div id="model-selector">
-            <select id="model-name">
-                <option value="models/gemini-3.1-pro-preview">Gemini 3.1 Pro (2026 旗艦)</option>
-                <option value="models/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash-Lite (極速)</option>
-                <option value="models/gemini-2.5-pro">Gemini 2.5 Pro (穩定高階)</option>
-                <option value="models/gemini-2.5-flash">Gemini 2.5 Flash (平衡型)</option>
-                <option value="models/gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite (經濟型)</option>
-                <option value="models/gemma-4-31b-it">Gemma 4 (31B) - 開源王者</option>
-            </select>
-        </div>
-        <textarea id="prompt-input" placeholder="🚀 輸入開發目標..."></textarea>
-        <button id="run-btn" onclick="submitTask()">執行任務</button>
-        <div id="log-container">
-            <div style="color: #888; font-size: 11px; margin-bottom: 5px;">SYSTEM LOGS</div>
-            <div id="logs"></div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="/main.js"></script>
 </body>
 </html>

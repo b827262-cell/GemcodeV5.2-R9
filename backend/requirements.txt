@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+google-genai
+google-cloud-firestore
+python-dotenv
+pydantic
+pyvirtualdisplay
+Pillow
+matplotlib
+numpy
+graphviz

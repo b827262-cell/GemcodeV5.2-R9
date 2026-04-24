@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+      - "3005:3005"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+
+  backend:
+    volumes:
+      - ./backend:/app
+      - ./backend/workspace:/app/workspace
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1

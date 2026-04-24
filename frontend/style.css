@@ -1,32 +1,165 @@
-body { margin:0; display:flex; height:100vh; background:#0d1117; color:#c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+/* ==========================================
+   GETCODE IDE V7.0 - 核心樣式表
+   ========================================== */
 
-/* 品牌標誌樣式 */
-#brand-header { margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #30363d; }
-.logo { font-size: 26px; font-weight: 900; color: #ff8c00; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255, 140, 0, 0.3); }
-.version { font-size: 10px; color: #6e7681; font-weight: bold; margin-top: -5px; }
+/* 🌟 全域變數 (GitHub Dark 風格) */
+:root {
+    --bg-color: #010409;
+    --panel-bg: #0d1117;
+    --border-color: #30363d;
+    --text-color: #c9d1d9;
+    --text-muted: #8b949e;
+    --primary-color: #238636;
+    --primary-hover: #2ea043;
+    --accent-color: #58a6ff;
+    --danger-color: #f85149;
+    --title-color: #D97757; /* 對齊你截圖中的 GETCODE 橘紅色 */
+}
 
-#sidebar { width:200px; border-right:1px solid #333; padding:20px; background: #010409; display: flex; flex-direction: column; }
-.file-item { padding: 8px; cursor: pointer; border-radius: 4px; margin-bottom: 5px; font-size: 13px; color: #8b949e; }
-.file-item:hover { background: #161b22; color: #58a6ff; }
+/* 🌟 基礎重置 */
+* { box-sizing: border-box; }
 
-#main-content { flex:1; display:flex; flex-direction:column; border-right: 1px solid #333; }
-#editor-container { flex: 2; display:flex; flex-direction:column; }
-#editor { flex:1; }
-#toolbar { padding:10px 20px; background:#161b22; border-top:1px solid #333; display: flex; align-items: center; justify-content: space-between; }
+body, html {
+    margin: 0; padding: 0; 
+    height: 100vh; width: 100vw;
+    background-color: var(--bg-color); 
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    overflow: hidden; /* 防止整個網頁出現滾動條，讓內部區塊各自滾動 */
+}
 
-#diff-panel { flex: 1; background:#010409; border-top:2px solid #30363d; display:flex; flex-direction:column; }
-#diff { flex:1; margin:0; padding:15px; overflow:auto; color:#79c0ff; font-size:12px; font-family: 'Fira Code', monospace; line-height: 1.5; }
+/* 🌟 大版面佈局 (Flexbox 矩陣) */
+.app-container {
+    display: flex; flex-direction: column; 
+    height: 100%; width: 100%;
+}
 
-#task-panel { width: 320px; display: flex; flex-direction: column; background: #0d1117; padding: 20px; }
-.panel-header { font-size: 11px; font-weight: bold; color: #6e7681; margin-bottom: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+.row, .bottom-row {
+    display: flex; flex-direction: row; 
+    width: 100%;
+}
 
-#model-name { width: 100%; padding: 10px; background: #161b22; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; margin-bottom: 15px; font-size: 12px; }
-#prompt-input { height: 120px; background: #010409; color: #fff; border: 1px solid #30363d; border-radius: 6px; padding: 12px; resize: none; margin-bottom: 15px; outline: none; font-size: 13px; }
-#run-btn { background: #238636; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; }
-#run-btn:hover { background: #2ea043; }
+.panel {
+    background-color: var(--panel-bg);
+    display: flex; flex-direction: column;
+    padding: 12px;
+    overflow: hidden;
+}
 
-#log-container { flex: 1; margin-top: 20px; background: #010409; border: 1px solid #30363d; border-radius: 6px; padding: 12px; overflow-y: auto; font-size: 12px; }
-.log-entry { margin-bottom: 8px; color: #00e5ff; font-family: 'Fira Code', monospace; }
+#editor-panel {
+    padding-top: 0; /* 讓上方的分頁標籤貼齊邊緣 */
+}
 
-button { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; }
-button:hover { background: #30363d; }
+/* 🌟 十字拖拉條 (Splitters) */
+.splitter-v {
+    width: 6px; background-color: var(--bg-color); 
+    cursor: col-resize; z-index: 10;
+    transition: background-color 0.2s;
+}
+.splitter-h {
+    height: 6px; background-color: var(--bg-color); 
+    cursor: row-resize; z-index: 10;
+    transition: background-color 0.2s;
+}
+.splitter-v:hover, .splitter-h:hover, .splitter-v:active, .splitter-h:active {
+    background-color: var(--accent-color);
+}
+.no-select { user-select: none; }
+
+/* 🌟 標題與文字 */
+.getcode-title {
+    color: var(--title-color); font-size: 18px; font-weight: bold; 
+    font-family: "Courier New", monospace; letter-spacing: 2px; 
+    margin-bottom: 12px;
+}
+.panel-label {
+    font-size: 11px; font-weight: bold; color: var(--text-muted); 
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* 🌟 表單元素 (下拉選單與輸入框) */
+select, .task-input {
+    width: 100%; background-color: var(--bg-color); color: var(--text-color);
+    border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;
+    margin-bottom: 12px; font-family: inherit; font-size: 13px;
+}
+.task-input {
+    flex-grow: 1; resize: none; 
+}
+.task-input:focus, select:focus {
+    outline: none; border-color: var(--accent-color);
+}
+
+/* 🌟 按鈕群 */
+button {
+    cursor: pointer; border: none; border-radius: 6px; 
+    padding: 8px 14px; font-weight: 600; font-size: 13px; 
+    transition: all 0.2s ease;
+}
+.primary-btn {
+    width: 100%; background-color: var(--primary-color); color: white; padding: 10px;
+}
+.primary-btn:hover { background-color: var(--primary-hover); }
+.primary-btn.stop { background-color: #da3633; }
+.primary-btn.stop:hover { background-color: var(--danger-color); }
+
+.tool-btn { 
+    background-color: #21262d; color: var(--text-color); 
+    border: 1px solid var(--border-color); 
+}
+.tool-btn:hover { background-color: #30363d; border-color: #8b949e; }
+
+.run-btn { background-color: var(--primary-color); color: white; }
+.run-btn:hover { background-color: var(--primary-hover); }
+
+.toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+
+/* 🌟 輸出區塊 (Logs, Terminal, Workspace) */
+.log-area, .file-list-area, .terminal-output {
+    flex-grow: 1; background-color: var(--bg-color); 
+    border: 1px solid var(--border-color); border-radius: 6px; 
+    padding: 12px; font-family: "Consolas", monospace; font-size: 13px;
+    overflow-y: auto; color: var(--text-muted);
+}
+.terminal-output pre { margin: 0; white-space: pre-wrap; font-family: inherit; }
+
+/* 🌟 檔案列表清單 */
+.file-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 12px; background: #161b22; border-radius: 4px;
+    margin-bottom: 6px; font-size: 12px; border: 1px solid transparent;
+}
+.file-item:hover { border-color: var(--border-color); background: #21262d; }
+.file-download-link { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+.file-download-link:hover { text-decoration: underline; }
+
+/* 🌟 分頁系統 (Tabs) */
+.tabs {
+    display: flex; background: var(--panel-bg); 
+    padding-top: 10px; border-bottom: 1px solid var(--border-color);
+}
+.tab {
+    padding: 8px 16px; background: #161b22; color: var(--text-muted);
+    border: 1px solid var(--border-color); border-bottom: none; 
+    border-radius: 6px 6px 0 0; margin-right: 4px; 
+    cursor: pointer; font-size: 12px; font-family: "Consolas", monospace;
+    transition: background 0.2s, color 0.2s;
+}
+.tab:hover { background: #21262d; color: var(--text-color); }
+.tab.active {
+    background: var(--bg-color); color: var(--text-color); font-weight: bold;
+    border-top: 2px solid var(--accent-color);
+}
+
+/* 🌟 CodeMirror 編輯器自適應 */
+.CodeMirror {
+    flex-grow: 1; height: auto !important; 
+    border: 1px solid var(--border-color); border-radius: 6px;
+    font-family: "Consolas", monospace; font-size: 14px;
+}
+
+/* 🌟 美化自訂滾動條 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-color); }
+::-webkit-scrollbar-thumb { background: #484f58; border-radius: 5px; border: 2px solid var(--bg-color); }
+::-webkit-scrollbar-thumb:hover { background: #6e7681; }

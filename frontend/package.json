@@ -1,0 +1,12 @@
+{
+  "name": "gemcode-v5-vite",
+  "private": true,
+  "version": "5.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}

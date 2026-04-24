@@ -1,33 +1,21 @@
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    container_name: ultra-v5-backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./workspace:/app/workspace
-      - ${HOME}/.config/gcloud/application_default_credentials.json:/app/gcp-key.json:ro
-    # 🌟 關鍵修復：明確指示 Docker 讀取根目錄的 .env 檔案
-    env_file:
-      - .env
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/gcp-key.json
-      - GOOGLE_CLOUD_PROJECT=gemcode-v5-platform
-    restart: always
-
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    container_name: ultra-v5-frontend
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     ports:
-      - "3001:80"
-    depends_on:
-      - backend
-    restart: always
+      - "3001:3001"
+    container_name: frontend
 
-networks:
-  default:
-    name: ultra-net
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    container_name: backend
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --url http://frontend:3001
+    depends_on:
+      - frontend
+    restart: unless-stopped

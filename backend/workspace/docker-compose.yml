@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  math_api:
+    build: .
+    container_name: math_api_service
+    ports:
+      - "8000:8000"
+    restart: always
+    volumes:
+      - ./calculator.db:/app/calculator.db

@@ -1,17 +1,22 @@
-# 敏感金鑰與環境變數 (絕對不能上傳！)
-.env
-gcp-key.json
-application_default_credentials.json
+# 系統與暫存
+.pids
+.public_url
+logs/
+*.log
 
-# Python 快取與虛擬環境
+# Python 相關
+venv/
 __pycache__/
 *.pyc
-.venv/
-.pytest_cache/
 
-# Docker 與系統檔案
-.DS_Store
+# Node.js 相關
 node_modules/
 dist/
-.gcloud/
-workspace/
+
+# 環境變數與機密 (切記不要上傳)
+.env
+frontend/.env
+.public_url
+
+# 工作區沙盒 (不備份使用者產生的檔案)
+backend/workspaces/
