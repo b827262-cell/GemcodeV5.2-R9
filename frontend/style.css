@@ -1,5 +1,6 @@
 /* ==========================================
-   GETCODE IDE V7.0 - 核心樣式表
+   GETCODE IDE V7.0/V9.0 - 核心樣式表
+   融合 Github Dark 美學與 Cross-Matrix Grid 佈局
    ========================================== */
 
 /* 🌟 全域變數 (GitHub Dark 風格) */
@@ -13,7 +14,7 @@
     --primary-hover: #2ea043;
     --accent-color: #58a6ff;
     --danger-color: #f85149;
-    --title-color: #D97757; /* 對齊你截圖中的 GETCODE 橘紅色 */
+    --title-color: #D97757; 
 }
 
 /* 🌟 基礎重置 */
@@ -25,48 +26,86 @@ body, html {
     background-color: var(--bg-color); 
     color: var(--text-color);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    overflow: hidden; /* 防止整個網頁出現滾動條，讓內部區塊各自滾動 */
+    overflow: hidden; 
 }
 
-/* 🌟 大版面佈局 (Flexbox 矩陣) */
+/* 🌟 大版面佈局 (Grid 矩陣 - 升級版) */
 .app-container {
-    display: flex; flex-direction: column; 
-    height: 100%; width: 100%;
-}
-
-.row, .bottom-row {
-    display: flex; flex-direction: row; 
-    width: 100%;
+    display: grid;
+    /* 三欄：左面板(40%) / 分割線(5px) / 右面板(剩下空間) */
+    grid-template-columns: 40% 5px 1fr;
+    /* 三列：上面板(40%) / 分割線(5px) / 下面板(剩下空間) */
+    grid-template-rows: 40% 5px 1fr;
+    height: 100vh;
+    width: 100vw;
 }
 
 .panel {
     background-color: var(--panel-bg);
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
     padding: 12px;
     overflow: hidden;
+    border: 1px solid var(--border-color); 
 }
 
-#editor-panel {
-    padding-top: 0; /* 讓上方的分頁標籤貼齊邊緣 */
-}
+#editor-panel { padding-top: 0; }
 
-/* 🌟 十字拖拉條 (Splitters) */
-.splitter-v {
-    width: 6px; background-color: var(--bg-color); 
+/* ==========================================
+   🌟 十字拖拉條與網格定位 (核心修改區)
+   ========================================== */
+
+/* 定位四個主要面板 */
+#control-panel { grid-column: 1; grid-row: 1; }
+#logs-panel    { grid-column: 3; grid-row: 1; }
+#editor-panel  { grid-column: 1; grid-row: 3; }
+#terminal-panel{ grid-column: 3; grid-row: 3; }
+
+/* 垂直與水平分割線定位 (佔據第2軌) */
+.resizer-v {
+    grid-column: 2; 
+    grid-row: 1 / span 3; /* 貫穿上下 */
+    background-color: var(--bg-color); 
     cursor: col-resize; z-index: 10;
     transition: background-color 0.2s;
 }
-.splitter-h {
-    height: 6px; background-color: var(--bg-color); 
+
+.resizer-h {
+    grid-column: 1 / span 3; /* 貫穿左右 */
+    grid-row: 2; 
+    background-color: var(--bg-color); 
     cursor: row-resize; z-index: 10;
     transition: background-color 0.2s;
 }
-.splitter-v:hover, .splitter-h:hover, .splitter-v:active, .splitter-h:active {
+
+.resizer-v:hover, .resizer-h:hover, .resizer-v:active, .resizer-h:active {
     background-color: var(--accent-color);
 }
+
+/* 中心點 (十字樞紐) */
+.resizer-cross {
+    grid-column: 2;
+    grid-row: 2;
+    background-color: var(--accent-color);
+    cursor: move;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    margin-left: -4.5px;
+    margin-top: -4.5px;
+    box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+}
+.resizer-cross::after { content: "✥"; color: var(--bg-color); font-size: 10px; font-weight: bold; }
 .no-select { user-select: none; }
 
-/* 🌟 標題與文字 */
+/* ==========================================
+   🌟 原始 UI 樣式保留 (字體、按鈕、輸出區塊)
+   ========================================== */
+
 .getcode-title {
     color: var(--title-color); font-size: 18px; font-weight: bold; 
     font-family: "Courier New", monospace; letter-spacing: 2px; 
@@ -77,28 +116,20 @@ body, html {
     margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
 }
 
-/* 🌟 表單元素 (下拉選單與輸入框) */
 select, .task-input {
     width: 100%; background-color: var(--bg-color); color: var(--text-color);
     border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;
     margin-bottom: 12px; font-family: inherit; font-size: 13px;
 }
-.task-input {
-    flex-grow: 1; resize: none; 
-}
-.task-input:focus, select:focus {
-    outline: none; border-color: var(--accent-color);
-}
+.task-input { flex-grow: 1; resize: none; }
+.task-input:focus, select:focus { outline: none; border-color: var(--accent-color); }
 
-/* 🌟 按鈕群 */
 button {
     cursor: pointer; border: none; border-radius: 6px; 
     padding: 8px 14px; font-weight: 600; font-size: 13px; 
     transition: all 0.2s ease;
 }
-.primary-btn {
-    width: 100%; background-color: var(--primary-color); color: white; padding: 10px;
-}
+.primary-btn { width: 100%; background-color: var(--primary-color); color: white; padding: 10px; }
 .primary-btn:hover { background-color: var(--primary-hover); }
 .primary-btn.stop { background-color: #da3633; }
 .primary-btn.stop:hover { background-color: var(--danger-color); }
@@ -114,7 +145,6 @@ button {
 
 .toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
 
-/* 🌟 輸出區塊 (Logs, Terminal, Workspace) */
 .log-area, .file-list-area, .terminal-output {
     flex-grow: 1; background-color: var(--bg-color); 
     border: 1px solid var(--border-color); border-radius: 6px; 
@@ -123,7 +153,6 @@ button {
 }
 .terminal-output pre { margin: 0; white-space: pre-wrap; font-family: inherit; }
 
-/* 🌟 檔案列表清單 */
 .file-item {
     display: flex; justify-content: space-between; align-items: center;
     padding: 8px 12px; background: #161b22; border-radius: 4px;
@@ -133,7 +162,6 @@ button {
 .file-download-link { color: var(--accent-color); text-decoration: none; font-weight: bold; }
 .file-download-link:hover { text-decoration: underline; }
 
-/* 🌟 分頁系統 (Tabs) */
 .tabs {
     display: flex; background: var(--panel-bg); 
     padding-top: 10px; border-bottom: 1px solid var(--border-color);
@@ -151,14 +179,12 @@ button {
     border-top: 2px solid var(--accent-color);
 }
 
-/* 🌟 CodeMirror 編輯器自適應 */
 .CodeMirror {
     flex-grow: 1; height: auto !important; 
     border: 1px solid var(--border-color); border-radius: 6px;
     font-family: "Consolas", monospace; font-size: 14px;
 }
 
-/* 🌟 美化自訂滾動條 */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg-color); }
 ::-webkit-scrollbar-thumb { background: #484f58; border-radius: 5px; border: 2px solid var(--bg-color); }

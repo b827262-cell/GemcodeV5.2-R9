@@ -1,21 +1,18 @@
+# docker-compose.yml
 services:
-  frontend:
+  gemcode-cloud-simulator:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: Dockerfile
+    container_name: gemcode-local-cloud
     ports:
-      - "3001:3001"
-    container_name: frontend
-
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    container_name: backend
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    command: tunnel --url http://frontend:3001
-    depends_on:
-      - frontend
-    restart: unless-stopped
+      - "8080:8080"
+    volumes:
+      # 保留工作區的資料掛載，這樣你重啟容器時代碼不會不見
+      - ./backend/workspaces:/app/workspaces
+    env_file:
+      # 載入你的 API KEY
+      - .env.backend
+    environment:
+      # 強制指定與 Cloud Run 相同的 PORT 變數
+      - PORT=8080

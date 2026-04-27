@@ -1,22 +1,28 @@
-# 系統與暫存
-.pids
-.public_url
-logs/
-*.log
-
-# Python 相關
+# Python
 venv/
 __pycache__/
 *.pyc
 
-# Node.js 相關
+# Node
 node_modules/
 dist/
 
-# 環境變數與機密 (切記不要上傳)
+# Env / Secrets
 .env
+.env.*
 frontend/.env
+backend/.env*
+
+# Logs
+logs/
+*.log
+
+# Runtime
+.pids
 .public_url
 
-# 工作區沙盒 (不備份使用者產生的檔案)
+# Workspace（⚠️ 很重要）
 backend/workspaces/
+
+# OS
+.DS_Store

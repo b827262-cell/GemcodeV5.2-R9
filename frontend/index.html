@@ -15,74 +15,63 @@
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <div class="row" id="top-row" style="height: 40%;">
-            <div class="panel" id="control-panel" style="width: 40%;">
-                <div class="getcode-title">GETCODE</div>
-                
-                <select id="model-select">
-                    <optgroup label="Gemini 系列 (核心與多模態)">
-                        <option value="models/gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
-                        <option value="models/gemini-3.1-pro-preview-customtools">Gemini 3.1 Pro (Custom Tools)</option>
-                        <option value="models/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash-Lite Preview</option>
-                        <option value="models/gemini-3-pro-preview">Gemini 3 Pro Preview</option>
-                        <option value="models/gemini-3-flash-preview">Gemini 3 Flash Preview</option>
-                        <option value="models/gemini-flash-latest">Gemini Flash Latest</option>
-                        <option value="models/gemini-pro-latest">Gemini Pro Latest</option>
-                        <option value="models/gemini-2.5-pro">Gemini 2.5 Pro</option>
-                        <option value="models/gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
-                        <option value="models/gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
-                        <option value="models/gemini-2.0-flash">Gemini 2.0 Flash</option>
-                        <option value="models/gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite</option>
-                    </optgroup>
-                    <optgroup label="Gemma 系列 (開源權重模型)">
-                        <option value="models/gemma-4-31b-it">Gemma 4 31B IT</option>
-                    </optgroup>
-                </select>
+    <div class="app-container" id="main-layout">
+        <!-- 1. 左上：控制面板 -->
+        <div class="panel" id="control-panel">
+            <div class="getcode-title">GETCODE</div>
+            <select id="model-select">
+                <optgroup label="Gemini 系列 (核心與多模態)">
+                    <option value="models/gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+                    <option value="models/gemini-2.5-pro">Gemini 2.5 Pro</option>
+                    <option value="models/gemini-2.0-flash">Gemini 2.0 Flash</option>
+                    <option value="models/gemini-3.1-pro-preview">Gemini 3.1 Pro Preview</option>
+                    <option value="models/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash-Lite Preview</option>
+                    <option value="models/gemini-flash-latest">Gemini Flash Latest</option>
+                    <option value="models/gemini-pro-latest">Gemini Pro Latest</option>
+                </optgroup>
+                <optgroup label="Gemma 系列">
+                    <option value="models/gemma-4-31b-it">Gemma 4 31B IT</option>
+                </optgroup>
+            </select>
+            <textarea id="task-input" class="task-input" placeholder="例如：同時開發資料生成與分析功能..."></textarea>
+            <button id="ai-btn" class="primary-btn">生成專案代碼 (多檔案)</button>
+        </div>
 
-                <textarea id="task-input" class="task-input" placeholder="例如：同時開發資料生成與分析功能..."></textarea>
-                <button id="ai-btn" class="primary-btn">生成專案代碼 (多檔案)</button>
+        <!-- 2. 右上：日誌與檔案 -->
+        <div class="panel" id="logs-panel">
+            <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="panel-label">SYSTEM LOGS</div>
+                <div id="logs" class="log-area">> 系統已就緒...</div>
             </div>
-            
-            <div class="splitter-v" id="split-v-top"></div>
-            
-            <div class="panel" id="logs-panel" style="width: 60%; gap: 10px; display: flex; flex-direction: column;">
-                <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                    <div class="panel-label">SYSTEM LOGS</div>
-                    <div id="logs" class="log-area">> 系統已就緒 (XML 解析與 Session 隔離啟動)...</div>
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                    <div class="panel-label">📂 WORKSPACE EXPLORER</div>
-                    <div id="file-list" class="file-list-area">等待程式執行產生檔案...</div>
-                </div>
+            <div style="flex: 1; display: flex; flex-direction: column; min-height: 0; margin-top: 10px;">
+                <div class="panel-label">📂 WORKSPACE EXPLORER</div>
+                <div id="file-list" class="file-list-area">等待執行...</div>
             </div>
         </div>
 
-        <div class="splitter-h" id="split-h-main"></div>
-
-        <div class="bottom-row" id="bottom-row" style="height: 60%;">
-            <div class="panel" id="editor-panel" style="width: 50%; padding-top: 0;">
-                <div class="tabs" id="tab-bar">
-                    </div>
-                <div class="toolbar" style="margin-top: 8px;">
-                    <button id="btn-open" class="tool-btn">📂 開啟本機</button>
-                    <button id="btn-save" class="tool-btn">💾 儲存本機</button>
-                </div>
-                <textarea id="editor-content"></textarea>
+        <!-- 3. 左下：編輯器 -->
+        <div class="panel" id="editor-panel">
+            <div class="tabs" id="tab-bar"></div>
+            <div class="toolbar" style="margin-top: 8px;">
+                <button id="btn-open" class="tool-btn">📂 開啟本機</button>
+                <button id="btn-save" class="tool-btn">💾 儲存本機</button>
             </div>
-
-            <div class="splitter-v" id="split-v-bottom"></div>
-
-            <div class="panel" id="terminal-panel" style="width: 50%;">
-                <div class="toolbar" style="justify-content: space-between;">
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <button class="run-btn" id="run-btn">▶ RUN 當前分頁</button>
-                    </div>
-                    <button id="dl-btn" class="tool-btn" style="display: none; background: #3fb950; color: white;">📥 下載圖表</button>
-                </div>
-                <div class="terminal-output" id="terminal-output">等待執行結果...</div>
-            </div>
+            <textarea id="editor-content"></textarea>
         </div>
+
+        <!-- 4. 右下：終端輸出 -->
+        <div class="panel" id="terminal-panel">
+            <div class="toolbar" style="justify-content: space-between;">
+                <button class="run-btn" id="run-btn">▶ RUN 當前分頁</button>
+                <button id="dl-btn" class="tool-btn" style="display: none; background: #3fb950; color: white;">📥 下載圖表</button>
+            </div>
+            <div class="terminal-output" id="terminal-output">等待結果...</div>
+        </div>
+
+        <!-- 5. 佈局控制元素 (Resizers) -->
+        <div class="resizer-v"></div>
+        <div class="resizer-h"></div>
+        <div class="resizer-cross" id="cross-handler"></div>
     </div>
     <script type="module" src="/main.js"></script>
 </body>
